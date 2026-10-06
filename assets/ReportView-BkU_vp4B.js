@@ -1,0 +1,8 @@
+import{n as e}from"./rolldown-runtime-CsOFd3vK.js";import{t}from"./jsx-runtime-CadfrxEJ.js";import{r as n,t as r}from"./ChatRenderer-Cq3i7Ubm.js";function i({report:e}){let t=[e.subtitle,e.generatedAt].filter(Boolean).join(` · `);return(0,a.jsxs)(`div`,{style:{display:`flex`,flexDirection:`column`,gap:22},children:[t&&(0,a.jsx)(`div`,{style:{fontFamily:`var(--font-display)`,fontSize:12,color:`var(--text-muted)`,marginTop:-8},children:t}),e.sections.map((e,t)=>(0,a.jsxs)(`section`,{style:{display:`flex`,flexDirection:`column`,gap:12},children:[e.heading&&(0,a.jsx)(`h3`,{style:{margin:0,paddingBottom:6,borderBottom:`1px solid var(--border-light)`,fontFamily:`var(--font-display)`,fontSize:13,fontWeight:700,color:`var(--atomity-gray-900)`},children:e.heading}),e.items.map((e,t)=>(0,a.jsx)(r,{block:e,inReport:!0},t))]},t))]})}var a;function o(){return(o=e((()=>{a=t(),n(),i.__docgenInfo={description:`The body of a report, as rendered inside the overlay.\r
+\r
+A section's items are the same blocks a reply is made of (ReportItem in schema.ts is the\r
+ChatBlock union minus \`report\`), so they are drawn by the same \`ChatBlockView\` — a table here\r
+and a table in the thread are the identical component, and neither can drift from the other.\r
+\r
+The title isn't drawn here: the overlay's own header already shows it (see ReportCard), and\r
+repeating it is just two headings saying the same thing.`,methods:[],displayName:`ReportView`,props:{report:{required:!0,tsType:{name:`ReportDocument`},description:``}}}})))()}o();export{i as default};

@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+
+    <title>storybook - Storybook</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    
+    <link rel="icon" type="image/x-icon" href="./favicon.ico" />
+    
+    <style>
+      @font-face {
+        font-family: 'Nunito Sans';
+        font-style: normal;
+        font-weight: 400;
+        font-display: swap;
+        src: url('./sb-common-assets/nunito-sans-regular.woff2') format('woff2');
+      }
+
+      @font-face {
+        font-family: 'Nunito Sans';
+        font-style: italic;
+        font-weight: 400;
+        font-display: swap;
+        src: url('./sb-common-assets/nunito-sans-italic.woff2') format('woff2');
+      }
+
+      @font-face {
+        font-family: 'Nunito Sans';
+        font-style: normal;
+        font-weight: 700;
+        font-display: swap;
+        src: url('./sb-common-assets/nunito-sans-bold.woff2') format('woff2');
+      }
+
+      @font-face {
+        font-family: 'Nunito Sans';
+        font-style: italic;
+        font-weight: 700;
+        font-display: swap;
+        src: url('./sb-common-assets/nunito-sans-bold-italic.woff2') format('woff2');
+      }
+    </style>
+
+    <link href="./sb-manager/runtime.js" rel="modulepreload" />
+
+    
+    <link href="./sb-addons/storybook-core-server-presets-0/common-manager-bundle.js" rel="modulepreload" />
+    
+    <link href="./sb-addons/chromatic-com-storybook-1/manager-bundle.js" rel="modulepreload" />
+    
+    <link href="./sb-addons/vitest-2/manager-bundle.js" rel="modulepreload" />
+    
+    <link href="./sb-addons/a11y-3/manager-bundle.js" rel="modulepreload" />
+    
+    <link href="./sb-addons/docs-4/manager-bundle.js" rel="modulepreload" />
+    
+    <link href="./sb-addons/storybook-5/manager-bundle.js" rel="modulepreload" />
+      <!--
+  Injected into the manager — the sidebar, toolbar and addon panel around the preview. It is a
+  separate bundle from the preview: no globals.css, no next/font. So the brand faces are
+  declared here by hand from the files main.ts serves at /fonts, and the values below are
+  literal copies of the tokens in src/modules/styles/foundations/tokens.css.
+
+  The theme (atomity-theme.ts) sets colours and fonts, but it can't reach sizing, the selected
+  row's fill or the tree's icon colours, so those are overridden here. The target is the
+  dashboard's own chrome: src/components/dashboard/Sidebar.tsx and TopBar.tsx.
+
+  Selectors stick to the hooks Storybook exposes for this — ids, .sidebar-* classes, roles and
+  data attributes — never its generated css-* class names, which change between builds. An id
+  in each selector outranks Storybook's own single-class rules, so nothing here needs !important.
+
+  Storybook interpolates this file against env vars, so it avoids percent signs.
+-->
+<style>
+  @font-face {
+    font-family: "Google Sans Flex";
+    src: url("./fonts/GoogleSansFlex-VariableFont_GRAD,ROND,opsz,slnt,wdth,wght.ttf") format("truetype");
+    font-weight: 300 700;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: "Google Sans Code";
+    src: url("./fonts/GoogleSansCode-VariableFont_MONO,wght.ttf") format("truetype");
+    font-weight: 100 900;
+    font-display: swap;
+  }
+
+  :root {
+    --sb-ink: #030303;
+    --sb-cream: #f6f4ec;
+    --sb-sand: #e8e5d9;
+    --sb-mint: #97DDB1;
+    --sb-mint-light: #b0ecc6;
+    --sb-mint-dark: #7ecfa0;
+    --sb-muted: rgba(3, 3, 3, 0.6);
+    --sb-faint: rgba(3, 3, 3, 0.4);
+    --sb-line: rgba(3, 3, 3, 0.12);
+    --sb-tint: rgba(3, 3, 3, 0.05);
+    /* --sb-tint laid over cream, as one opaque colour — for anything that has to cover what's
+       beneath it while matching a hovered row, which a translucent fill can't. */
+    --sb-tint-solid: #eae8e0;
+    --sb-display: "Google Sans Flex", ui-sans-serif, system-ui, sans-serif;
+    --sb-code: "Google Sans Code", ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+
+  /* ─────────────── Sidebar ─────────────── */
+
+  /* 1.5px rule, as the dashboard sidebar draws against the canvas. */
+  #storybook-sidebar-region {
+    background: var(--sb-cream);
+    box-shadow: inset -1.5px 0 0 var(--sb-line);
+  }
+
+  /* Logo band — the same height as the toolbar beside it, with the rule running full-bleed,
+     so the two read as one band the way Sidebar and TopBar share their 50px. */
+  #storybook-sidebar-region .sidebar-header {
+    height: 40px;
+    margin: -16px -12px 12px;
+    padding: 0 8px 0 16px;
+    border-bottom: 1.5px solid var(--sb-line);
+    align-items: center;
+  }
+
+  #storybook-sidebar-region .sidebar-header img {
+    height: 16px;
+    width: auto;
+    max-width: none;
+  }
+
+  /* Search — the widgets flyout's field: hairline, 8px radius, page surface. Storybook already
+     draws the hairline as an inset shadow, so only the shape and surface change. */
+  #storybook-sidebar-region .search-field {
+    height: 30px;
+    border-radius: 8px;
+    background: var(--sb-cream);
+  }
+
+  /* Focus — the app's --focus-ring: an ink edge with a soft mint halo, in place of Storybook's
+     2px black ring. */
+  #storybook-sidebar-region .search-field:focus-within {
+    outline: none;
+    box-shadow: inset 0 0 0 1px var(--sb-ink), 0 0 0 3px rgba(151, 221, 177, 0.5);
+  }
+
+  /* New-story button beside the search — the same 30px field shape, so the two sit as a pair. */
+  #storybook-sidebar-region button[aria-label="Create a new story"] {
+    width: 30px;
+    height: 30px;
+    border: 0;
+    border-radius: 8px;
+    background: var(--sb-cream);
+    box-shadow: inset 0 0 0 1px var(--sb-line);
+    color: var(--sb-muted);
+  }
+
+  #storybook-sidebar-region button[aria-label="Create a new story"]:hover {
+    background: var(--sb-tint);
+    color: var(--sb-ink);
+  }
+
+  /* Search results replace the tree while a query is typed: the same row shape, with the
+     matched letters on a mint-light highlight and the path as a MicroLabel beneath. */
+  #storybook-explorer-menu .search-result-item {
+    border-radius: 8px;
+    font-family: var(--sb-display);
+    font-size: 12px;
+    color: var(--sb-ink);
+  }
+
+  #storybook-explorer-menu .search-result-item:hover,
+  #storybook-explorer-menu .search-result-item[aria-selected="true"] {
+    background: var(--sb-tint);
+  }
+
+  #storybook-explorer-menu .search-result-item svg {
+    color: currentColor;
+    opacity: 0.7;
+  }
+
+  #storybook-explorer-menu .search-result-item mark {
+    background: var(--sb-mint-light);
+    color: var(--sb-ink);
+    font-weight: 700;
+    border-radius: 3px;
+  }
+
+  #storybook-explorer-menu .search-result-item--label > div:last-child,
+  #storybook-explorer-menu .search-result-item--label > div:last-child * {
+    font-family: var(--sb-code);
+    font-size: 9.5px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--sb-muted);
+  }
+
+  #storybook-explorer-searchfield {
+    height: 28px;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+    font-family: var(--sb-display);
+    font-size: 12px;
+  }
+
+  #storybook-explorer-searchfield::placeholder {
+    color: var(--sb-faint);
+  }
+
+  #storybook-sidebar-region .search-field code {
+    font-family: var(--sb-code);
+    font-size: 10px;
+    color: var(--sb-faint);
+  }
+
+  /* Tree rows — Sidebar.tsx's renderNavItem: muted 500 at rest, 8px radius, tight padding. */
+  #storybook-explorer-tree .sidebar-item {
+    min-height: 26px;
+    border-radius: 8px;
+    color: var(--sb-muted);
+    font-weight: 500;
+  }
+
+  #storybook-explorer-tree .sidebar-item > :is(a, button) {
+    min-height: 26px;
+    padding-top: 5px;
+    padding-bottom: 4px;
+    gap: 9px;
+    border-radius: 8px;
+    font-family: var(--sb-display);
+    font-size: 12px;
+    line-height: 16px;
+  }
+
+  #storybook-explorer-tree .sidebar-item:hover,
+  #storybook-explorer-tree .sidebar-item:focus-within {
+    background: var(--sb-tint);
+    color: var(--sb-ink);
+  }
+
+  /* Components are the folders you open, so they sit a step darker than the leaves inside. */
+  #storybook-explorer-tree .sidebar-item[data-nodetype="component"] {
+    color: var(--sb-ink);
+  }
+
+  /* Selected — mint fill, ink, bold: the dashboard's active nav row, the dropdown's selected
+     option and the invite menu's chosen role, all the same way. */
+  #storybook-explorer-tree .sidebar-item[data-selected="true"],
+  #storybook-explorer-tree .sidebar-item[data-selected="true"]:hover {
+    background: var(--sb-mint);
+    color: var(--sb-ink);
+    font-weight: 700;
+  }
+
+  /* The row's "…" context menu (dev server only — it's what addon-vitest hangs its actions on).
+     Storybook fills it, and fades it into the label with a 5px glow, in the colour its own
+     selected row uses: colorSecondary, which the theme sets to ink. With the row repainted mint
+     above, that left a black pill on the end of the selected row. So the button takes whatever
+     the row behind it is — cream-tint on hover, mint when selected — and is sized to the 26px
+     row instead of Storybook's 28px, so the glow no longer spills past it. */
+  #storybook-explorer-tree .sidebar-item [data-testid="context-menu"] {
+    width: 26px;
+    height: 26px;
+    border-radius: 8px;
+    color: var(--sb-muted);
+    background: var(--sb-tint-solid);
+    box-shadow: 0 0 5px 5px var(--sb-tint-solid);
+  }
+
+  #storybook-explorer-tree .sidebar-item[data-selected="true"] [data-testid="context-menu"] {
+    color: var(--sb-ink);
+    background: var(--sb-mint);
+    box-shadow: 0 0 5px 5px var(--sb-mint);
+  }
+
+  /* Storybook colours the glyph itself — white on a selected row, which all but vanishes on mint.
+     It takes the button's colour instead: ink when selected, muted otherwise. */
+  #storybook-explorer-tree .sidebar-item [data-testid="context-menu"] svg {
+    color: inherit;
+  }
+
+  /* Pressed/open — a step darker than the row, the way the dashboard's icon buttons answer. */
+  #storybook-explorer-tree .sidebar-item [data-testid="context-menu"]:hover,
+  #storybook-explorer-tree .sidebar-item [data-testid="context-menu"][aria-expanded="true"] {
+    color: var(--sb-ink);
+    background: var(--sb-sand);
+  }
+
+  #storybook-explorer-tree .sidebar-item[data-selected="true"] [data-testid="context-menu"]:hover,
+  #storybook-explorer-tree .sidebar-item[data-selected="true"] [data-testid="context-menu"][aria-expanded="true"] {
+    background: var(--sb-mint-dark);
+  }
+
+  /* Type icons: Storybook tints these orange, blue and teal by kind. The dashboard's nav
+     icons simply take the row's colour. */
+  #storybook-explorer-tree .sidebar-item > :is(a, button) > div:first-child svg,
+  #storybook-explorer-tree .sidebar-item[data-selected="true"] > :is(a, button) > div:first-child svg {
+    color: currentColor;
+    opacity: 0.7;
+  }
+
+  #storybook-explorer-tree .sidebar-item[data-selected="true"] > :is(a, button) > div:first-child svg {
+    opacity: 1;
+  }
+
+  /* Change-detection markers (the + on stories added since the last commit) — Storybook's blue
+     accent, recoloured to mint dark, the dashboard's positive-icon colour. On the mint selected
+     row it would vanish, so there it drops to ink. */
+  #storybook-explorer-tree [data-testid="tree-change-status-button"] svg {
+    color: var(--sb-mint-dark);
+  }
+
+  #storybook-explorer-tree .sidebar-item[data-selected="true"] [data-testid="tree-change-status-button"] svg {
+    color: var(--sb-ink);
+  }
+
+  /* Root groups — MicroLabel: mono caps, tracked, muted, with a hairline above each group like
+     the rule between the dashboard sidebar's sections. */
+  #storybook-explorer-tree .sidebar-subheading {
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 1px solid var(--sb-line);
+  }
+
+  #storybook-explorer-tree .sidebar-subheading > button[data-action="collapse-root"] {
+    font-family: var(--sb-code);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--sb-muted);
+  }
+
+  #storybook-explorer-tree .sidebar-subheading-action {
+    color: var(--sb-faint);
+  }
+
+  /* Scroll thumb — globals.css's scrollbar: gray-300, pill ends. */
+  #storybook-sidebar-region [data-orientation="vertical"][data-state] > div {
+    background: rgba(3, 3, 3, 0.22);
+    border-radius: 9999px;
+  }
+
+  /* ─────────────── Toolbar ─────────────── */
+
+  section.sb-bar[data-testid="sb-preview-toolbar"] {
+    box-shadow: inset 0 -1.5px 0 var(--sb-line);
+  }
+
+  section.sb-bar[data-testid="sb-preview-toolbar"] button {
+    border-radius: 8px;
+  }
+
+  section.sb-bar[data-testid="sb-preview-toolbar"] button:hover {
+    background: var(--sb-tint);
+    color: var(--sb-ink);
+  }
+
+  /* A tool that's switched on — the dashboard's Explain-with-AI toggle when pressed. */
+  section.sb-bar[data-testid="sb-preview-toolbar"] button[aria-checked="true"],
+  section.sb-bar[data-testid="sb-preview-toolbar"] button[aria-pressed="true"] {
+    background: var(--sb-mint);
+    color: var(--sb-ink);
+  }
+
+  /* The background picker always holds a value, so it gets the toggle's resting state:
+     mint light, ink, bold. */
+  section.sb-bar[data-testid="sb-preview-toolbar"] button[aria-label^="Preview background"] {
+    background: var(--sb-mint-light);
+    color: var(--sb-ink);
+    font-family: var(--sb-display);
+    font-weight: 700;
+  }
+
+  section.sb-bar[data-testid="sb-preview-toolbar"] button[aria-label="Change zoom level"] {
+    font-family: var(--sb-code);
+    font-size: 11px;
+  }
+
+  /* ─────────────── Addon panel ─────────────── */
+
+  #storybook-panel-root > div:first-child {
+    box-shadow: inset 0 -1.5px 0 var(--sb-line);
+  }
+
+  #storybook-panel-root [role="tab"] {
+    font-family: var(--sb-display);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--sb-muted);
+  }
+
+  #storybook-panel-root [role="tab"]:hover {
+    color: var(--sb-ink);
+  }
+
+  /* Selected tab keeps Storybook's 3px underline, recoloured to mint dark — the rule the
+     settings screen's connector tabs mark their active tab with. */
+  #storybook-panel-root [role="tab"][data-selected="true"] {
+    color: var(--sb-ink);
+    font-weight: 700;
+    border-bottom-color: var(--sb-mint-dark);
+  }
+
+  /* The count beside a tab label — mono figures, like the sidebar's widget count. */
+  #storybook-panel-root [role="tab"] > div > div {
+    font-family: var(--sb-code);
+    font-size: 10px;
+    font-weight: 700;
+    background: var(--sb-sand);
+    color: var(--sb-ink);
+  }
+
+  /* Native radios and checkboxes in Controls — ink, as the app's agreement checkbox and
+     billing-plan radios set them, instead of the browser's blue. */
+  #storybook-panel-root input:is([type="radio"], [type="checkbox"]) {
+    accent-color: var(--sb-ink);
+  }
+
+  /* Controls table section rows (CONTENT, BEHAVIOUR, …) — MicroLabel tracking instead of
+     Storybook's 0.35em, which spaced the word into separate letters. */
+  #storybook-panel-root .docblock-argstable-body td[colspan],
+  #storybook-panel-root .docblock-argstable-body td[colspan] * {
+    font-family: var(--sb-code);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+  }
+</style>
+
+<script>window.__CHROMATIC_STORYBOOK_ID__ = "a2117dfcecb0d6a677dba7997b03e8b8c41ef409d114da3ebac0b0912cbbc36b";</script> 
+
+    <style>
+      #storybook-root[hidden] {
+        display: none !important;
+      }
+    </style>
+
+    
+  </head>
+  <body>
+    <div id="root"></div>
+
+    
+    <script>
+      
+        
+          window['FEATURES'] = {
+  "actions": true,
+  "argTypeTargetsV7": true,
+  "babelRemoveBugfixes": false,
+  "backgrounds": true,
+  "changeDetection": true,
+  "componentsManifest": false,
+  "controls": true,
+  "disallowImplicitActionsInRenderV8": true,
+  "highlight": true,
+  "interactions": true,
+  "legacyDecoratorFileOrder": false,
+  "measure": true,
+  "outline": true,
+  "menuOnboardingChecklist": false,
+  "sidebarOnboardingChecklist": false,
+  "viewport": true
+};
+        
+      
+        
+          window['REFS'] = {};
+        
+      
+        
+          window['LOGLEVEL'] = "info";
+        
+      
+        
+          window['DOCS_OPTIONS'] = {
+  "defaultName": "Docs",
+  "docsMode": true
+};
+        
+      
+        
+          window['CONFIG_TYPE'] = "PRODUCTION";
+        
+      
+        
+          window['DOCGEN_STORY_PREPARED'] = false;
+        
+      
+        
+      
+        
+      
+        
+          window['TAGS_OPTIONS'] = {};
+        
+      
+        
+          window['STORYBOOK_BUILDER'] = "vite";
+        
+      
+        
+          window['STORYBOOK_FRAMEWORK'] = "nextjs-vite";
+        
+      
+        
+          window['STORYBOOK_RENDERER'] = "react";
+        
+      
+        
+      
+    </script>
+    
+
+    <script type="module">
+      import './sb-manager/globals-runtime.js';
+
+      
+        import './sb-addons/storybook-core-server-presets-0/common-manager-bundle.js';
+      
+        import './sb-addons/chromatic-com-storybook-1/manager-bundle.js';
+      
+        import './sb-addons/vitest-2/manager-bundle.js';
+      
+        import './sb-addons/a11y-3/manager-bundle.js';
+      
+        import './sb-addons/docs-4/manager-bundle.js';
+      
+        import './sb-addons/storybook-5/manager-bundle.js';
+      
+
+      import './sb-manager/runtime.js';
+    </script>
+  </body>
+</html>
