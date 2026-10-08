@@ -1,4 +1,4 @@
-import{n as e}from"./rolldown-runtime-CsOFd3vK.js";import{c as t,p as n}from"./blocks-QI9uCeUh.js";import{t as r}from"./jsx-runtime-CadfrxEJ.js";import{i,r as a}from"./react-k3YPvb47.js";import{D as o,_ as s,g as c,m as l,o as u,p as d}from"./iframe-Bcs7j9Iz.js";function f(e){let n={code:`code`,em:`em`,h2:`h2`,li:`li`,p:`p`,strong:`strong`,ul:`ul`,...i(),...e.components};return(0,m.jsxs)(m.Fragment,{children:[(0,m.jsx)(t,{title:`Introduction`}),`
+import{n as e}from"./rolldown-runtime-CsOFd3vK.js";import{c as t,p as n}from"./blocks-QI9uCeUh.js";import{t as r}from"./jsx-runtime-CadfrxEJ.js";import{i,r as a}from"./react-k3YPvb47.js";import{D as o,_ as s,g as c,m as l,o as u,p as d}from"./iframe-BamRuqOx.js";function f(e){let n={code:`code`,em:`em`,h2:`h2`,li:`li`,p:`p`,strong:`strong`,ul:`ul`,...i(),...e.components};return(0,m.jsxs)(m.Fragment,{children:[(0,m.jsx)(t,{title:`Introduction`}),`
 `,`
 `,(0,m.jsx)(u,{children:`The tokens, type and primitives the Atomity dashboard is built from — rendered with the app's own stylesheet and fonts, so what you see here is what ships.`}),`
 `,(0,m.jsx)(n.h2,{id:`foundations`,children:`Foundations`}),`
@@ -40,7 +40,8 @@ story renders exactly as the app does. Keep `,(0,m.jsx)(n.code,{children:`.story
 `]}),`
 `,(0,m.jsxs)(n.li,{children:[`
 `,(0,m.jsx)(n.p,{children:`Switch the canvas surface from the toolbar's background menu — Cream is the page, Paper and\r
-Sand are the lighter and deeper neutrals, Ink is the dark panel.`}),`
+Sand are the lighter and deeper neutrals. There's no dark option: every component is drawn for\r
+the light page.`}),`
 `]}),`
 `,(0,m.jsxs)(n.li,{children:[`
 `,(0,m.jsxs)(n.p,{children:[`Foundation pages are MDX in `,(0,m.jsx)(n.code,{children:`src/stories/`}),`, composed from the blocks in `,(0,m.jsx)(n.code,{children:`src/stories/blocks.tsx`}),`.\r
