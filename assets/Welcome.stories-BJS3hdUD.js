@@ -30,7 +30,7 @@ import{n as e}from"./rolldown-runtime-CsOFd3vK.js";import{t}from"./react-Drno7eU
 		description: "What could go wrong, and how to roll it back",\r
 		message: "What are the risks of applying this recommendation, and how would I roll it back?",\r
 	},\r
-]`,computed:!1}}}}})))()}var m,h,g,_,v,y;function b(){return(b=e((()=>{m=n(),p(),{fn:h}=__STORYBOOK_MODULE_TEST__,g={title:`Module-Specific Components/Explain/Welcome`,component:u,tags:[`autodocs`],parameters:{layout:`fullscreen`},args:{variant:`page`,onPick:h()},argTypes:{variant:{control:`inline-radio`,options:[`page`,`rail`]},suggestions:{control:!1}}},_={decorators:[e=>(0,m.jsx)(`div`,{style:{height:520},children:(0,m.jsx)(e,{})})]},v={args:{variant:`rail`},decorators:[e=>(0,m.jsx)(`div`,{style:{width:320,height:420,display:`flex`,flexDirection:`column`,background:`var(--atomity-white)`},children:(0,m.jsx)(e,{})})]},_.parameters={..._.parameters,docs:{..._.parameters?.docs,source:{originalSource:`{
+]`,computed:!1}}}}})))()}var m,h,g,_,v,y;function b(){return(b=e((()=>{m=n(),p(),{fn:h}=__STORYBOOK_MODULE_TEST__,g={title:`Module-Specific Components/Explain/Welcome`,component:u,tags:[`autodocs`],parameters:{layout:`fullscreen`},args:{variant:`page`,onPick:h()},argTypes:{variant:{control:`inline-radio`,options:[`page`,`rail`]},suggestions:{control:!1}}},_={decorators:[e=>(0,m.jsx)(`div`,{style:{height:520},children:(0,m.jsx)(e,{})})]},v={args:{variant:`rail`},parameters:{layout:`padded`},decorators:[e=>(0,m.jsx)(`div`,{style:{width:320,height:420,display:`flex`,flexDirection:`column`,background:`var(--atomity-white)`},children:(0,m.jsx)(e,{})})]},_.parameters={..._.parameters,docs:{..._.parameters?.docs,source:{originalSource:`{
   decorators: [Story => <div style={{
     height: 520
   }}>\r
@@ -39,6 +39,9 @@ import{n as e}from"./rolldown-runtime-CsOFd3vK.js";import{t}from"./react-Drno7eU
 }`,..._.parameters?.docs?.source},description:{story:`The /explain canvas's empty state.`,..._.parameters?.docs?.description}}},v.parameters={...v.parameters,docs:{...v.parameters?.docs,source:{originalSource:`{
   args: {
     variant: "rail"
+  },
+  parameters: {
+    layout: "padded"
   },
   decorators: [Story => <div style={{
     width: 320,
